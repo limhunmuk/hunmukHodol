@@ -4,14 +4,20 @@ import com.hunmuk.api.domain.Post;
 import com.hunmuk.api.repository.PostRepository;
 import com.hunmuk.api.request.PostCreate;
 import com.hunmuk.api.response.PostResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+import java.util.stream.IntStream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.data.domain.Sort.Direction.DESC;
+
 @SpringBootTest
 class PostServiceTest {
 
@@ -39,10 +45,10 @@ class PostServiceTest {
         postService.write(postRequest);
 
         //then
-        Assertions.assertThat(postRepository.count()).isEqualTo(1);
+        assertThat(postRepository.count()).isEqualTo(1);
         Post post = postRepository.findAll().get(0);
-        Assertions.assertThat(post.getTitle()).isEqualTo("글제목");
-        Assertions.assertThat(post.getContents()).isEqualTo("글내용");
+        assertThat(post.getTitle()).isEqualTo("글제목");
+        assertThat(post.getContents()).isEqualTo("글내용");
     }
 
     @Test
@@ -63,12 +69,40 @@ class PostServiceTest {
         PostResponse post = postService.get(id);
 
         //then
-        Assertions.assertThat(post.getId()).isEqualTo(id);
+        assertThat(post.getId()).isEqualTo(id);
         PostResponse asserionPost = postService.get(1L);
-        Assertions.assertThat(asserionPost.getTitle()).isEqualTo("글제목");
-        Assertions.assertThat(asserionPost.getContents()).isEqualTo("글내용");
+        assertThat(asserionPost.getTitle()).isEqualTo("글제목");
+        assertThat(asserionPost.getContents()).isEqualTo("글내용");
 
     }
+    @Test
+    @DisplayName("글 1 페이지 조회")
+    void 글_여러개조회(){
+
+        //Pageable pageable = PageRequest.of(0, 10);
+
+        List<Post> requestPosts = IntStream.range(1, 31)
+                .mapToObj(i -> Post.builder()
+                        .title("글제목 " + i)
+                        .contents("글내용 " + i)
+                        .build())
+                .toList();
+
+        postRepository.saveAll(requestPosts);
+
+        Pageable pageable = PageRequest.of(0, 5, DESC, "id");
+        List<PostResponse> posts = postService.getList(pageable);
+
+
+        assertThat(5L).isEqualTo(posts.size());
+        assertThat(posts.get(0).getTitle()).isEqualTo("글제목 30");
+        assertThat(posts.get(0).getContents()).isEqualTo("글내용 30");
+        assertThat(posts.get(4).getTitle()).isEqualTo("글제목 26");
+        assertThat(posts.get(4).getContents()).isEqualTo("글내용 26");
+
+
+    }
+
 
 
 }

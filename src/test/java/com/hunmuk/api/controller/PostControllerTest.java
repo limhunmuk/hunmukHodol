@@ -14,16 +14,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 //@WebMvcTest
 @AutoConfigureMockMvc
@@ -172,6 +170,49 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.id").value(post.getId()))
                 .andExpect(jsonPath("$.title").value("제목입니다."))
                 .andExpect(jsonPath("$.contents").value("내용입니다."))
+                .andDo(MockMvcResultHandlers.print());
+
+
+
+    }
+
+    @Test
+    @DisplayName("여러건 조회")
+    void 글_여러_조회() throws Exception {
+
+      /**  Post post = Post.builder()
+                .title("제목입니다.")
+                .contents("내용입니다.")
+                .build();
+
+        postRepository.save(post);
+
+        Post post2 = Post.builder()
+                .title("제목입니다.")
+                .contents("내용입니다.")
+                .build();
+
+        postRepository.save(post2);
+       **/
+
+
+        List<Post> requestPosts = IntStream.range(1, 31)
+                .mapToObj(i -> Post.builder()
+                        .title("글제목 " + i)
+                        .contents("글내용 " + i)
+                        .build())
+                .toList();
+
+        postRepository.saveAll(requestPosts);
+
+        //expected
+        mockMvc.perform(MockMvcRequestBuilders.get("/posts?pageNo=1&sort=id,desc&size=5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(5))
+                .andExpect(jsonPath("$[0].title").value("글제목 30"))
+                .andExpect(jsonPath("$[0].contents").value("글내용 30"))
+                .andExpect(jsonPath("$[1].title").value("글제목 29"))
+                .andExpect(jsonPath("$[1].contents").value("글내용 29"))
                 .andDo(MockMvcResultHandlers.print());
 
 

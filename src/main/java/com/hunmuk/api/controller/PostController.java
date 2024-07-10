@@ -1,18 +1,14 @@
 package com.hunmuk.api.controller;
 
-import com.hunmuk.api.domain.Post;
 import com.hunmuk.api.request.PostCreate;
 import com.hunmuk.api.response.PostResponse;
 import com.hunmuk.api.service.PostService;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,11 +52,16 @@ public class PostController {
         //return Map.of();
     }
 
-    @GetMapping("/posts/{id}")
-    public PostResponse getPost(@PathVariable Long id) {
-        log.info("params > {}", id);
+    @GetMapping("/posts/{posstId}")
+    public PostResponse getPost(@PathVariable Long postId) {
+        log.info("params > {}", postId);
 
-        return postService.get(id);
+        return postService.get(postId);
+    }
+
+    @GetMapping("/posts")
+    public List<PostResponse> getPosts(Pageable pageable) {
+        return  postService.getList(pageable);
     }
 
 

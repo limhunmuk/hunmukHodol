@@ -6,7 +6,10 @@ import com.hunmuk.api.request.PostCreate;
 import com.hunmuk.api.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -29,13 +32,18 @@ public class PostService {
 
     public PostResponse get(Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
-        PostResponse postResponse = PostResponse.builder()
+        return PostResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .contents(post.getContents())
                 .build();
 
-        return postResponse;
+    }
 
+    public List<PostResponse> getList(Pageable pageable) {
+        // Pageable pageable = PageRequest.of(pageNo, 5, Sort.by("id").descending());
+        return postRepository.findAll(pageable).stream()
+                .map(PostResponse::new)
+                .toList();
     }
 }
