@@ -1,12 +1,12 @@
 package com.hunmuk.api.controller;
 
 import com.hunmuk.api.request.PostCreate;
+import com.hunmuk.api.request.PostSearch;
 import com.hunmuk.api.response.PostResponse;
 import com.hunmuk.api.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,6 +44,7 @@ public class PostController {
         return "hello posts";
     }
 
+
     @PostMapping("/posts")
     public void getPostsRequest(@RequestBody @Valid PostCreate request) {
         log.info("params > {}", request);
@@ -52,7 +53,7 @@ public class PostController {
         //return Map.of();
     }
 
-    @GetMapping("/posts/{posstId}")
+    @GetMapping("/posts/{postId}")
     public PostResponse getPost(@PathVariable Long postId) {
         log.info("params > {}", postId);
 
@@ -60,8 +61,10 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public List<PostResponse> getPosts(Pageable pageable) {
-        return  postService.getList(pageable);
+    public List<PostResponse> getPosts(@ModelAttribute PostSearch postSearch) {
+
+        System.out.println("lhm test /posts = " + postSearch);
+        return  postService.getList(postSearch);
     }
 
 

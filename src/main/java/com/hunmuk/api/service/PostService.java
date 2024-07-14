@@ -3,10 +3,10 @@ package com.hunmuk.api.service;
 import com.hunmuk.api.domain.Post;
 import com.hunmuk.api.repository.PostRepository;
 import com.hunmuk.api.request.PostCreate;
+import com.hunmuk.api.request.PostSearch;
 import com.hunmuk.api.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,9 +40,9 @@ public class PostService {
 
     }
 
-    public List<PostResponse> getList(Pageable pageable) {
+    public List<PostResponse> getList(PostSearch search) {
         // Pageable pageable = PageRequest.of(pageNo, 5, Sort.by("id").descending());
-        return postRepository.findAll(pageable).stream()
+        return postRepository.getList(search).stream()
                 .map(PostResponse::new)
                 .toList();
     }

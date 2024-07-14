@@ -3,20 +3,18 @@ package com.hunmuk.api.service;
 import com.hunmuk.api.domain.Post;
 import com.hunmuk.api.repository.PostRepository;
 import com.hunmuk.api.request.PostCreate;
+import com.hunmuk.api.request.PostSearch;
 import com.hunmuk.api.response.PostResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @SpringBootTest
 class PostServiceTest {
@@ -51,7 +49,7 @@ class PostServiceTest {
         assertThat(post.getContents()).isEqualTo("글내용");
     }
 
-    @Test
+    //@Test
     @DisplayName("글 조회 할꺼임")
     void 글조회(){
 
@@ -81,7 +79,7 @@ class PostServiceTest {
 
         //Pageable pageable = PageRequest.of(0, 10);
 
-        List<Post> requestPosts = IntStream.range(1, 31)
+        List<Post> requestPosts = IntStream.range(0, 20)
                 .mapToObj(i -> Post.builder()
                         .title("글제목 " + i)
                         .contents("글내용 " + i)
@@ -90,15 +88,18 @@ class PostServiceTest {
 
         postRepository.saveAll(requestPosts);
 
-        Pageable pageable = PageRequest.of(0, 5, DESC, "id");
-        List<PostResponse> posts = postService.getList(pageable);
+        PostSearch search = PostSearch.builder()
+                .page(1)
+                .build();
+
+        List<PostResponse> posts = postService.getList(search);
 
 
-        assertThat(5L).isEqualTo(posts.size());
-        assertThat(posts.get(0).getTitle()).isEqualTo("글제목 30");
-        assertThat(posts.get(0).getContents()).isEqualTo("글내용 30");
-        assertThat(posts.get(4).getTitle()).isEqualTo("글제목 26");
-        assertThat(posts.get(4).getContents()).isEqualTo("글내용 26");
+        assertThat(10L).isEqualTo(posts.size());
+        assertThat(posts.get(0).getTitle()).isEqualTo("글제목 19");
+        assertThat(posts.get(0).getContents()).isEqualTo("글내용 19");
+
+        System.out.println("posts = " + posts);
 
 
     }

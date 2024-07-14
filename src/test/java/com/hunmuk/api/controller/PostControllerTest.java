@@ -75,7 +75,7 @@ class PostControllerTest {
                          .content(json)
                  )
                 .andExpect(status().isOk())
-                 .andExpect(content().string("{}"))
+                 .andExpect(content().string(""))
                  .andDo(MockMvcResultHandlers.print());
 
     }
@@ -125,7 +125,7 @@ class PostControllerTest {
                          .content(json)
                  )
                 .andExpect(status().isOk())
-                 .andExpect(content().string("{}"))
+                 .andExpect(content().string(""))
                  .andDo(MockMvcResultHandlers.print());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/posts")
@@ -134,7 +134,7 @@ class PostControllerTest {
                                  "\"contents\" : \"내용입니다\"}")
                  )
                 .andExpect(status().isOk())
-                 .andExpect(content().string("{}"))
+                 .andExpect(content().string(""))
                  .andDo(MockMvcResultHandlers.print());
 
          //then
@@ -144,11 +144,6 @@ class PostControllerTest {
         assertEquals("제목입니다.", post.getTitle());
         assertEquals("내용입니다", post.getContents());
 
-        List<Post> all = postRepository.findAll();
-        System.out.println(">>>>>>>>>>>>>>>>>>> all.size() = " + all.size());
-        for (Post post1 : all) {
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>> post1 = " + post1.toString());
-        }
 
     }
 
@@ -180,23 +175,7 @@ class PostControllerTest {
     @DisplayName("여러건 조회")
     void 글_여러_조회() throws Exception {
 
-      /**  Post post = Post.builder()
-                .title("제목입니다.")
-                .contents("내용입니다.")
-                .build();
-
-        postRepository.save(post);
-
-        Post post2 = Post.builder()
-                .title("제목입니다.")
-                .contents("내용입니다.")
-                .build();
-
-        postRepository.save(post2);
-       **/
-
-
-        List<Post> requestPosts = IntStream.range(1, 31)
+        List<Post> requestPosts = IntStream.range(0, 20)
                 .mapToObj(i -> Post.builder()
                         .title("글제목 " + i)
                         .contents("글내용 " + i)
@@ -206,13 +185,11 @@ class PostControllerTest {
         postRepository.saveAll(requestPosts);
 
         //expected
-        mockMvc.perform(MockMvcRequestBuilders.get("/posts?pageNo=1&sort=id,desc&size=5"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/posts?page=1&size=10"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(5))
-                .andExpect(jsonPath("$[0].title").value("글제목 30"))
-                .andExpect(jsonPath("$[0].contents").value("글내용 30"))
-                .andExpect(jsonPath("$[1].title").value("글제목 29"))
-                .andExpect(jsonPath("$[1].contents").value("글내용 29"))
+                .andExpect(jsonPath("$.length()").value(10))
+                .andExpect(jsonPath("$[0].title").value("글제목 19"))
+                .andExpect(jsonPath("$[0].contents").value("글내용 19"))
                 .andDo(MockMvcResultHandlers.print());
 
 
