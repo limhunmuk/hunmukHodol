@@ -1,6 +1,7 @@
 package com.hunmuk.api.controller;
 
 import com.hunmuk.api.request.PostCreate;
+import com.hunmuk.api.request.PostEdit;
 import com.hunmuk.api.request.PostSearch;
 import com.hunmuk.api.response.PostResponse;
 import com.hunmuk.api.service.PostService;
@@ -65,6 +66,20 @@ public class PostController {
 
         System.out.println("lhm test /posts = " + postSearch);
         return  postService.getList(postSearch);
+    }
+
+    @PatchMapping("/posts/{postId}")
+    public void setPost(@PathVariable Long postId, @RequestBody @Valid PostEdit edit) {
+        log.info("params > {}", postId);
+
+        postService.edit(postId, edit);
+    }
+
+    @DeleteMapping("/posts/{postId}")
+    public void deletePost(@PathVariable Long postId) {
+        log.info("params > {}", postId);
+
+        postService.delete(postId);
     }
 
 

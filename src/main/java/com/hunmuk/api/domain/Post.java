@@ -1,14 +1,11 @@
 package com.hunmuk.api.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
+//@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post {
 
@@ -27,5 +24,20 @@ public class Post {
     @Lob
     private String contents;
 
+   /* public void change(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
+    }*/
 
+    public PostEditor.PostEditorBuilder toEditor(){
+        return PostEditor.builder()
+                .title(this.title)
+                .contents(this.contents);
+    }
+
+
+    public void edit(PostEditor editor) {
+        this.title = editor.getTitle();
+        this.contents = editor.getContents();
+    }
 }
