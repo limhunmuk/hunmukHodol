@@ -45,15 +45,23 @@ public class PostController {
         return "hello posts";
     }
 
-
+    /**
+     * 등록
+     * @param request
+     */
     @PostMapping("/posts")
     public void getPostsRequest(@RequestBody @Valid PostCreate request) {
-        log.info("params > {}", request);
 
+        request.validate();
+        log.info("params > {}", request);
         postService.write(request);
-        //return Map.of();
     }
 
+    /**
+     * 조회
+     * @param postId
+     * @return
+     */
     @GetMapping("/posts/{postId}")
     public PostResponse getPost(@PathVariable Long postId) {
         log.info("params > {}", postId);
@@ -61,20 +69,32 @@ public class PostController {
         return postService.get(postId);
     }
 
+    /**
+     * 목록
+     * @param postSearch
+     * @return
+     */
     @GetMapping("/posts")
     public List<PostResponse> getPosts(@ModelAttribute PostSearch postSearch) {
 
-        System.out.println("lhm test /posts = " + postSearch);
         return  postService.getList(postSearch);
     }
 
+    /**
+     * 수정
+     * @param postId
+     * @param edit
+     */
     @PatchMapping("/posts/{postId}")
     public void setPost(@PathVariable Long postId, @RequestBody @Valid PostEdit edit) {
         log.info("params > {}", postId);
-
         postService.edit(postId, edit);
     }
 
+    /**
+     * 삭제
+     * @param postId
+     */
     @DeleteMapping("/posts/{postId}")
     public void deletePost(@PathVariable Long postId) {
         log.info("params > {}", postId);

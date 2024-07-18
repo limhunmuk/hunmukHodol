@@ -1,8 +1,11 @@
 package com.hunmuk.api.controller;
 
+import com.hunmuk.api.exception.HunMukException;
+import com.hunmuk.api.exception.PostNotFound;
 import com.hunmuk.api.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,11 +18,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ExceptionController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
     public ErrorResponse methodArgumentNotValidException(MethodArgumentNotValidException e) {
         //if(e.hasErrors()) {
-            log.info("hasErrors > {}", e.hasErrors());
+        log.info("hasErrors > {}", e.hasErrors());
 
         ErrorResponse response = ErrorResponse.builder()
                 .code("400")
@@ -34,24 +37,47 @@ public class ExceptionController {
         }
 
         return response;
-        //}
-        /**
-        //.. d.MethodArgumentNotValidException
-        //System.out.println(" exception advise !!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
-        log.info("exception advise !!!!!!!!!!!!!!!!!!!!!!!!!!!!!", e);
+    }
 
-        FieldError fieldError = e.getFieldError();
-        log.info("fieldError > {}", fieldError);
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(PostNotFound.class)
+    @ResponseBody
+    public ErrorResponse postNotFound(PostNotFound e) {
 
-        String field = fieldError.getField();
-        log.info("field > {}", field);
-        String defaultMessage = fieldError.getDefaultMessage();
-        log.info("defaultMessage > {}", defaultMessage);
+        ErrorResponse response = ErrorResponse.builder()
+                .code("404")
+                .message(e.getMessage())
+                .build();
 
-        Map<String, String> error = Map.of(field, defaultMessage);
-        log.info("error > {}", error);
+        return response;
+    }
 
-        return error;
-         */
+
+    //@ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    @ExceptionHandler(HunMukException.class)
+    public ResponseEntity<ErrorResponse> hunmukException(HunMukException e) {
+
+        int statsCode = e.getStatusCode();
+
+        ErrorResponse body = ErrorResponse.builder()
+                .code(String.valueOf(statsCode))
+                .message(e.getMessage())
+                .validation(e.getValidation())
+                .build();
+
+        // 응답 validation -> title -> 제목에 바보가 포함될수 없습니다
+   /*     if (e instanceof InvaildRequest) {
+
+            InvaildRequest invaildRequest = (InvaildRequest) e;
+            String fieldName = invaildRequest.getFieldName();
+            String message = invaildRequest.getMessage();
+
+            body.addValidation(fieldName, message);
+        }*/
+
+        return ResponseEntity.status(statsCode)
+                .body(body);
+
     }
 }

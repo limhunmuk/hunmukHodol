@@ -143,8 +143,6 @@ class PostControllerTest {
         Post post = postRepository.findAll().get(0);
         assertEquals("제목입니다.", post.getTitle());
         assertEquals("내용입니다", post.getContents());
-
-
     }
 
     @Test
@@ -166,9 +164,6 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.title").value("제목입니다."))
                 .andExpect(jsonPath("$.contents").value("내용입니다."))
                 .andDo(print());
-
-
-
     }
 
     @Test
@@ -243,5 +238,63 @@ class PostControllerTest {
                 .andDo(print())
         ;
     }
+
+    @Test
+    @DisplayName("존재하지 않는게시물 조회")
+    void testCase1() throws Exception {
+
+    //expected
+    mockMvc.perform(MockMvcRequestBuilders.delete("/posts/{postId}", 1L)
+                    .contentType(APPLICATION_JSON)
+            )
+            .andExpect(status().isNotFound())
+            .andDo(print());
+
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시물 수정")
+    void testCase2() throws Exception {
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("임씨유 수정.")
+                .contents("내용이유 수정.")
+                .build();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        //expected
+        mockMvc.perform(MockMvcRequestBuilders.patch("/posts/{postId}", 1L)
+                    .contentType(APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(postEdit))
+            )
+            .andExpect(status().isNotFound())
+            .andDo(print());
+
+    }
+
+    @Test
+    @DisplayName(" 제목에 바보라는 단어는 금칙어 !!")
+    void testCase4() throws Exception {
+
+        PostCreate request = PostCreate.builder()
+                .title("바보입니다.")
+                .contents("임바보")
+                .build();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json  = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/posts")
+                        .contentType(APPLICATION_JSON)
+                        .content(json)
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+
+
+
+    }
+
 
 }
