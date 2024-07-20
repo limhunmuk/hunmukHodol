@@ -1,16 +1,39 @@
 = 훈묵 api 문서
+:doctype: :book
+:icons: font
+:source-highlighter: rouge
+:toc: left
+:toclevels: 2
+:sectlinks:
+
 :toc:
 
 == 글 단건 조회
 
 === 요청
-include::{snippets}/index/http-request.adoc[]
+include::{snippets}/post-inquiry/http-request.adoc[]
+
+include::{snippets}/post-inquiry/path-parameters.adoc[]
+
 
 === 응답
-include::{snippets}/index/http-response.adoc[]
+include::{snippets}/post-inquiry/http-response.adoc[]
 
-=== curl
-include::{snippets}/index/curl-request.adoc[]
+include::{snippets}/post-inquiry/response-fields.adoc[]
+
+
+== 글 작성
+
+=== 요청
+include::{snippets}/post-create/http-request.adoc[]
+
+include::{snippets}/post-create/request-fields.adoc[]
+
+
+=== 응답
+include::{snippets}/post-create/http-response.adoc[]
+
+
 //include::{snippets}/index/httpie-request.adoc[]
 //include::{snippets}/index/request-body.adoc[]
 //include::{snippets}/index/response-body.adoc[]
