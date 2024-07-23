@@ -92,3 +92,5 @@ secrets.yml
 .sts4-cache
 .git-hooks/
 node_modules
+
+**/.DS_Store
