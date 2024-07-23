@@ -29,6 +29,8 @@ public class ExceptionController {
                 .message("잘못된요청입니다.")
                 .build();
 
+        System.out.println("response = " + response);
+
         for(FieldError fieldError : e.getFieldErrors()) {
                 log.info("fieldError > {}", fieldError);
                 log.info("field > {}", fieldError.getField());
