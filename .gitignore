@@ -58,7 +58,6 @@ replay_pid*
 *~
 .#*
 .*.md.html
-.DS_Store
 .attach_pid*
 .classpath
 .factorypath
@@ -93,4 +92,8 @@ secrets.yml
 .git-hooks/
 node_modules
 
+
+.DS_Store
+._.DS_Store
 **/.DS_Store
+**/._.DS_Store
