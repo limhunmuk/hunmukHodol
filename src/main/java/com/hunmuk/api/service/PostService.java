@@ -31,6 +31,7 @@ public class PostService {
                 .contents(postCreate.getContents())
                 .build();
 
+        System.out.println("\"test\" = " + "test");
         postRepository.save(post);
     }
 
