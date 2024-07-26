@@ -31,7 +31,7 @@ public class PostService {
                 .contents(postCreate.getContents())
                 .build();
 
-        System.out.println(" 훈묵 리베이스 테스트 ??" );
+        System.out.println(" 훈묵 메인에서" );
         postRepository.save(post);
     }
 
