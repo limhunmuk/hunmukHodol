@@ -1,19 +1,48 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const count = ref(0)
-//const count = 0;
+import axios from 'axios'
+import {useRouter} from "vue-router";
+
+const title = ref('');
+const contents = ref('');
+
+const useRoute = useRouter();
+
+
+
+const write = () => {
+  console.log(title.value);
+  console.log(contents.value);
+
+  //alert(title.value + ' ' + content.value);
+  axios.post('/api/posts', {
+    title: title.value,
+    contents: contents.value
+  }).then((response) => {
+    console.log(response);
+    useRoute.replace('/');
+  }).catch((error) => {
+    console.log(error);
+  });
+}
+
 </script>
 
 <template>
   <br>
-  <div>
-    <input type="text" placeholder="제목을 입력해주세요"/>
+  <div class="">
+    <el-input type="text" v-model="title" placeholder="제목을 입력해주세요"/>
   </div>
-  <div>
-    <textarea rows="15" placeholder="내용을 입력해주세요"></textarea>
+  <br>
+  <div class="d-flex">
+    <el-input type="textarea" v-model="contents"  rows="15" placeholder="내용을 입력해주세요"></el-input>
   </div>
-  <button>작성</button>
+    <br>
+  <div>
+    <el-button type="primary" @click="write()">작성</el-button>
+  </div>
+
 </template>
 
 <style scoped>

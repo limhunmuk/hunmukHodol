@@ -46,18 +46,6 @@ public class PostController {
     }
 
     /**
-     * 등록
-     * @param request
-     */
-    @PostMapping("/posts")
-    public void getPostsRequest(@RequestBody @Valid PostCreate request) {
-
-        request.validate();
-        log.info("params > {}", request);
-        postService.write(request);
-    }
-
-    /**
      * 조회
      * @param postId
      * @return
@@ -81,6 +69,19 @@ public class PostController {
     }
 
     /**
+     * 등록
+     * @param request
+     */
+    @PostMapping("/posts")
+    public void getPostsRequest(@RequestBody @Valid PostCreate request) {
+
+        log.info("lhm test >>>>>>>>>>>>");
+        request.validate();
+        log.info("params > {}", request);
+        postService.write(request);
+    }
+
+    /**
      * 수정
      * @param postId
      * @param edit
@@ -101,6 +102,5 @@ public class PostController {
 
         postService.delete(postId);
     }
-
 
 }
