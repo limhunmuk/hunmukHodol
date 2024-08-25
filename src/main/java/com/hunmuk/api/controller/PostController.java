@@ -1,5 +1,6 @@
 package com.hunmuk.api.controller;
 
+import com.hunmuk.api.config.data.UserSession;
 import com.hunmuk.api.request.PostCreate;
 import com.hunmuk.api.request.PostEdit;
 import com.hunmuk.api.request.PostSearch;
@@ -11,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @Slf4j
@@ -23,6 +23,17 @@ public class PostController {
     // http method
     // get, post, put, patch, delete, option, head, trace, connect
 
+    @GetMapping("/test")
+    public String test() {
+        return "인증이 필요없는 페이지";
+    }
+
+    @GetMapping("/foo")
+    public String foo(UserSession userSession) {
+        log.info("foo == {}", userSession.name);
+        return userSession.name;
+    }
+
     @PostMapping("/posts/v1")
     public String getPostsV1(@RequestParam String title, @RequestParam String contents) {
         log.info("title > {}", title);
@@ -31,12 +42,12 @@ public class PostController {
         return "hello posts";
     }
 
-    @PostMapping("/posts/v2")
+    /*@PostMapping("/posts/v2")
     public String getPostsV2(@RequestParam Map<String, String> params) {
         log.info("params > {}", params);
 
         return "hello posts";
-    }
+    }*/
 
     @PostMapping("/posts/v3")
     public String getPostsV3(PostCreate params) {
@@ -73,12 +84,15 @@ public class PostController {
      * @param request
      */
     @PostMapping("/posts")
+    //public void getPostsRequest(@RequestBody @Valid PostCreate request, @RequestHeader String authorization) {
     public void getPostsRequest(@RequestBody @Valid PostCreate request) {
 
         log.info("lhm test >>>>>>>>>>>>");
-        request.validate();
-        log.info("params > {}", request);
-        postService.write(request);
+        //if(authorization.equals("hunmuk")) {
+            request.validate();
+            log.info("params > {}", request);
+            postService.write(request);
+        //}
     }
 
     /**
@@ -97,10 +111,9 @@ public class PostController {
      * @param postId
      */
     @DeleteMapping("/posts/{postId}")
-    public void deletePost(@PathVariable Long postId) {
+    //public void deletePost(@PathVariable Long postId ,  @RequestHeader String authorization) {
+    public void deletePost(@PathVariable Long postId ) {
         log.info("params > {}", postId);
-
         postService.delete(postId);
     }
-
 }
