@@ -29,9 +29,9 @@ public class PostController {
     }
 
     @GetMapping("/foo")
-    public String foo(UserSession userSession) {
-        log.info("foo == {}", userSession.name);
-        return userSession.name;
+    public Long foo(UserSession userSession) {
+        log.info("foo == {}", userSession.id);
+        return userSession.id;
     }
 
     @PostMapping("/posts/v1")
@@ -47,7 +47,7 @@ public class PostController {
         log.info("params > {}", params);
 
         return "hello posts";
-    }*/
+    }
 
     @PostMapping("/posts/v3")
     public String getPostsV3(PostCreate params) {
@@ -55,7 +55,7 @@ public class PostController {
 
         return "hello posts";
     }
-
+*/
     /**
      * 조회
      * @param postId
