@@ -11,6 +11,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -18,14 +19,19 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.crypto.SecretKey;
-import java.util.Base64;
 
+/**
+ * description : 인증처리를 위한 Resolver
+ * UserSession 객체를 생성하여 반환
+ * 인증된 사용자 유무 판단
+ */
 @RequiredArgsConstructor
 @Slf4j
 public class AuthResolver implements HandlerMethodArgumentResolver {
 
     private final SessionRepository sessionRepository;
-    private final static String KEY = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKb2UifQ.x6bowyHqNQjI9lvjxHe9MHwJMoSnvBETdgDI6EWk9rE";
+    private final AppConfig appConfig;
+    private final static String KEY = "U2grUHZhL2JwZmpKSy9wSFlrbGxFdGMvMVkwNWVjNG02UDNmRHlDalhDMD0=";
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(this.KEY);
@@ -39,31 +45,36 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+
         String jws = webRequest.getHeader("authorization");
+
+        System.out.println("appConfig.hello.getName() = " + appConfig.hello.getName());
+        System.out.println("appConfig.getHello() = " + appConfig.getHello());
 
         if(jws == null || jws.isEmpty()) {
             throw new UnAuthorized();
         }
 
-        byte[] decKEY = Base64.getEncoder().encode(KEY.getBytes());
+
+
 
         try {
-
+            String key = Base64.encodeBase64String(KEY.getBytes());
             Jws<Claims> claims = Jwts.parser()
-                    .verifyWith(getSigningKey())
+                    .setSigningKey(key)
                     .build()
                     .parseSignedClaims(jws);
 
-            //OK, we can trust this JWT
+            //OK, we can trust this JWT -> 인증됨
 
             log.info("claims = {} " + claims);
-
-
+            String userId = claims.getBody().getSubject();
+            return new UserSession(Long.valueOf(userId));
 
         } catch (JwtException e) {
             throw new UnAuthorized();
-            //don't trust the JWT!
         }
+
 
 
      /**  HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
@@ -84,9 +95,6 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
       */
 
 //        Session session = sessionRepository.findByAccessToken(accessToken).orElseThrow(UnAuthorized::new);
-
-        return null;
-
 
     }
 }

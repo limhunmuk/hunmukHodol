@@ -66,6 +66,9 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 
+    //spring 어노테이션
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
 }
 
 // gradle clean 시에 QClass 디렉토리 삭제
