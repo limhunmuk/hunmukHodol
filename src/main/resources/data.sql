@@ -1,0 +1,1 @@
+insert  into `users`(email, password, name, created_at) values('admin@naver.com', 'admin','hunmuk', now());
