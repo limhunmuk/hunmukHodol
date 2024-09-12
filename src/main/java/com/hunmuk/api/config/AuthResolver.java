@@ -7,18 +7,13 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-
-import javax.crypto.SecretKey;
 
 /**
  * description : 인증처리를 위한 Resolver
@@ -31,13 +26,6 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
 
     private final SessionRepository sessionRepository;
     private final AppConfig appConfig;
-    private final static String KEY = "U2grUHZhL2JwZmpKSy9wSFlrbGxFdGMvMVkwNWVjNG02UDNmRHlDalhDMD0=";
-
-    private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(this.KEY);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
-
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.getParameterType().equals(UserSession.class);
@@ -46,26 +34,19 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 
-        String jws = webRequest.getHeader("authorization");
+        String jwt = webRequest.getHeader("authorization");
 
-        System.out.println("appConfig.hello.getName() = " + appConfig.hello.getName());
-        System.out.println("appConfig.getHello() = " + appConfig.getHello());
 
-        if(jws == null || jws.isEmpty()) {
+        if(jwt == null || jwt.isEmpty()) {
             throw new UnAuthorized();
         }
 
-
-
-
         try {
-            String key = Base64.encodeBase64String(KEY.getBytes());
-            Jws<Claims> claims = Jwts.parser()
-                    .setSigningKey(key)
-                    .build()
-                    .parseSignedClaims(jws);
 
-            //OK, we can trust this JWT -> 인증됨
+            Jws<Claims> claims = Jwts.parser()
+                    .setSigningKey(appConfig.getJwtKey()) //파라미터로 바이트 값이 들어간다.
+                    .build()
+                    .parseClaimsJws(jwt);
 
             log.info("claims = {} " + claims);
             String userId = claims.getBody().getSubject();

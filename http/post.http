@@ -2,4 +2,6 @@
 
 GET http://localhost:8080/foo
 Content-Type: application/json
-authorization: eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxIn0.OgAnr5p-uM1wJt4y9Uk-HSIS-TfK9mn9Nmb702WOhqbUE5WB4-mCteMpsGgsCORr
+authorization: eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzI2MDE4MzYxfQ.ks4L6aBWoiVbRGIp7rpXdBi-R29XHXFX90bdMh7V4Nw_owsp7K8bQ_81PchfGEXL
+
+### header에 authorization을 넣어서 요청하면 정상적으로 응답이 온다.

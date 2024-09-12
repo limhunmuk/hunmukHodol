@@ -8,13 +8,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "hunmuk")
 public class AppConfig {
 
-    Hello hello;
+    private byte[] jwtKey;
 
-    @Data
-    public static class Hello{
-        private String name;
-        private String age;
-        private String job;
+    public void setJwtKey(String jwtKey) {
+        this.jwtKey = jwtKey.getBytes();
+    }
 
+    public byte[] getJwtKey() {
+        return jwtKey;
     }
 }

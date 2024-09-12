@@ -69,6 +69,10 @@ dependencies {
     //spring 어노테이션
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
+    // 암호화 모듈
+    implementation 'org.springframework.security:spring-security-crypto:6.3.3'
+
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
 }
 
 // gradle clean 시에 QClass 디렉토리 삭제

@@ -6,6 +6,7 @@ import com.hunmuk.api.domain.User;
 import com.hunmuk.api.repository.SessionRepository;
 import com.hunmuk.api.repository.UserRepository;
 import com.hunmuk.api.request.Login;
+import com.hunmuk.api.request.Signup;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -203,8 +204,27 @@ class AuthControllerTest {
                 )
                 .andExpect(status().isUnauthorized())
                 .andDo(print());  // todo test list
-
-
     }
 
+
+    @Test
+    @DisplayName("회원가입")
+    void testCase6() throws Exception {
+
+        //given
+        Signup signup = Signup.builder()
+                .email("ihm2119@naver.com")
+                .password("1234")
+                .name("훈묵쓰")
+                .build();
+
+        //expected
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/signup")
+                        .content(objectMapper.writeValueAsString(signup))
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andDo(print());  // todo test list
+
+    }
 }

@@ -20,10 +20,11 @@ spring:
   jpa:
     defer-datasource-initialization: true
 
+  sql:
+    init:
+      mode: always
+
 
 hunmuk:
-  hello :
-    name : "hunmuk"
-    age : 30
-    job:
+  jwt-key: "U2grUHZhL2JwZmpKSy9wSFlrbGxFdGMvMVkwNWVjNG02UDNmRHlDalhDMD0="
 
