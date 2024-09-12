@@ -30,17 +30,18 @@ const write = () => {
 </script>
 
 <template>
-  <br>
-  <div class="">
-    <el-input type="text" v-model="title" placeholder="제목을 입력해주세요"/>
-  </div>
-  <br>
-  <div class="d-flex">
-    <el-input type="textarea" v-model="contents"  rows="15" placeholder="내용을 입력해주세요"></el-input>
-  </div>
+  <div style="padding-left: 10%">
+    <div class="">
+      <el-input type="text" v-model="title" placeholder="제목을 입력해주세요"/>
+    </div>
     <br>
-  <div>
-    <el-button type="primary" @click="write()">작성</el-button>
+    <div class="d-flex">
+      <el-input type="textarea" v-model="contents"  rows="15" placeholder="내용을 입력해주세요"></el-input>
+    </div>
+      <br>
+    <div>
+      <el-button type="primary" @click="write()">글 작성완료</el-button>
+    </div>
   </div>
 
 </template>
