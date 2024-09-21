@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,13 +67,18 @@ class AuthControllerTest {
         System.out.println("json = " + json);
 
         // test 에서는 init db를 생성하지않는다.
-        mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
                         .contentType(APPLICATION_JSON)
                         .content(json)
                 )
                 .andExpect(status().isOk())
                 //.andExpect(content().string(""))
-                .andDo(print());
+                //.andDo(print());
+                .andReturn();
+
+        System.out.println("mvcResult.getResponse().getContentAsString() = " + mvcResult.getResponse().getContentAsString());
+
+
 
     }
 

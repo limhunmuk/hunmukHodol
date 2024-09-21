@@ -27,6 +27,8 @@ public class AuthController {
     private final AppConfig appConfig;
     private final static String KEY = "U2grUHZhL2JwZmpKSy9wSFlrbGxFdGMvMVkwNWVjNG02UDNmRHlDalhDMD0=";
 
+
+
     @PostMapping("/auth/login")
     public SessionResponse login(@RequestBody Login login) {
     //public String login(@RequestBody Login login) {
