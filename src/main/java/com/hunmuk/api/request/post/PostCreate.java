@@ -1,4 +1,4 @@
-package com.hunmuk.api.request;
+package com.hunmuk.api.request.post;
 
 import com.hunmuk.api.exception.InvaildRequest;
 import jakarta.validation.constraints.NotBlank;

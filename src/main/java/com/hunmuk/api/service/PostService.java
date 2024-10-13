@@ -2,11 +2,14 @@ package com.hunmuk.api.service;
 
 import com.hunmuk.api.domain.Post;
 import com.hunmuk.api.domain.PostEditor;
+import com.hunmuk.api.domain.User;
 import com.hunmuk.api.exception.PostNotFound;
-import com.hunmuk.api.repository.PostRepository;
-import com.hunmuk.api.request.PostCreate;
-import com.hunmuk.api.request.PostEdit;
-import com.hunmuk.api.request.PostSearch;
+import com.hunmuk.api.exception.UserNotFound;
+import com.hunmuk.api.repository.post.PostRepository;
+import com.hunmuk.api.repository.UserRepository;
+import com.hunmuk.api.request.post.PostCreate;
+import com.hunmuk.api.request.post.PostEdit;
+import com.hunmuk.api.request.post.PostSearch;
 import com.hunmuk.api.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,15 +23,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostService {
 
+    private final UserRepository userRepository;
     private final PostRepository postRepository;
 
-    public void write(PostCreate postCreate) {
+    public void write(Long userId, PostCreate postCreate) {
         log.info("createPost");
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFound::new);
 
         //postCreate
         Post post = Post.builder()
                 .title(postCreate.getTitle())
                 .contents(postCreate.getContents())
+                .user(user)
                 .build();
 
         System.out.println(" 훈묵 메인에서" );

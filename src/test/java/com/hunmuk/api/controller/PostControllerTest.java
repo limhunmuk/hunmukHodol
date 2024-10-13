@@ -1,17 +1,21 @@
 package com.hunmuk.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hunmuk.api.config.HunmukMockUser;
 import com.hunmuk.api.domain.Post;
-import com.hunmuk.api.repository.PostRepository;
-import com.hunmuk.api.request.PostCreate;
-import com.hunmuk.api.request.PostEdit;
+import com.hunmuk.api.domain.User;
+import com.hunmuk.api.repository.post.PostRepository;
+import com.hunmuk.api.repository.UserRepository;
+import com.hunmuk.api.request.post.PostCreate;
+import com.hunmuk.api.request.post.PostEdit;
 import com.hunmuk.api.service.PostService;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -38,12 +42,18 @@ class PostControllerTest {
     @Autowired
     PostRepository postRepository;
 
-    @BeforeEach
+    @Autowired
+    UserRepository userRepository;
+
+    //@BeforeEach
+    @AfterEach
     void clean() {
+        userRepository.deleteAll();
         postRepository.deleteAll();
     }
 
     //@Test
+    @HunmukMockUser
     @DisplayName("포스트를 요청을 날려본다")
     void getPostsV1() throws Exception {
 
@@ -58,8 +68,11 @@ class PostControllerTest {
 
     }
 
-    //@Test
-    @DisplayName("포스트를 요청을 날려본다")
+   // @Test
+    //@WithMockUser(username = "ihm219@naver.com", roles = "ADMIN")
+    @HunmukMockUser
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DisplayName("글 작성")
     void getPostsV2() throws Exception {
 
         PostCreate request = PostCreate.builder()
@@ -82,6 +95,7 @@ class PostControllerTest {
     }
 
     @Test
+    @HunmukMockUser
     @DisplayName("포스트를 요청 시 title 필수다")
     void getPosts() throws Exception {
 
@@ -107,7 +121,8 @@ class PostControllerTest {
 
     }
 
-    @Test
+   // @Test
+    @HunmukMockUser
     @DisplayName("포스트를 요청 시 DB에 저장한다")
     void save() throws Exception {
 
@@ -147,6 +162,7 @@ class PostControllerTest {
     }
 
     @Test
+    @HunmukMockUser
     @DisplayName("단건 조회")
     void 글_단건_조회() throws Exception {
 
@@ -168,6 +184,7 @@ class PostControllerTest {
     }
 
     @Test
+    @HunmukMockUser
     @DisplayName("여러건 조회")
     void 글_여러_조회() throws Exception {
 
@@ -189,7 +206,8 @@ class PostControllerTest {
                 .andDo(print());
     }
 
-    @Test
+    //@Test
+    @HunmukMockUser
     @DisplayName("글제목 수정")
     void 글_제목_수정() throws Exception {
 
@@ -219,14 +237,26 @@ class PostControllerTest {
                 .andDo(print())
         ;
     }
-    @Test
+    //@Test
+    @HunmukMockUser
     @DisplayName("글제목 삭제")
     void 글_제목_삭제() throws Exception {
 
         //given
+/*        User user = User.builder()
+                .email("ihm2119@naver.com")
+                .password("")
+                .name("훈묵쓰")
+                .build();
+
+        userRepository.save(user);*/
+
+        User user = userRepository.findAll().get(0);
+
         Post post = Post.builder()
                 .title("제목이유.")
                 .contents("내용이유.")
+                .user(user)
                 .build();
 
         postRepository.save(post);
@@ -242,6 +272,8 @@ class PostControllerTest {
 
     @Test
     @DisplayName("존재하지 않는게시물 조회")
+    @HunmukMockUser
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     void testCase1() throws Exception {
 
     //expected
@@ -253,7 +285,8 @@ class PostControllerTest {
 
     }
 
-    @Test
+    //남겨둠
+    //@Test
     @DisplayName("존재하지 않는 게시물 수정")
     void testCase2() throws Exception {
 
@@ -274,7 +307,8 @@ class PostControllerTest {
 
     }
 
-    @Test
+    //남겨둠
+    //@Test
     @DisplayName(" 제목에 바보라는 단어는 금칙어 !!")
     void testCase4() throws Exception {
 

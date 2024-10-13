@@ -31,6 +31,9 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Session> sessions = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private List<Post> posts = new ArrayList<>();
+
     @Builder
     public User(Long id, String name, String email, String password) {
         this.id = id;

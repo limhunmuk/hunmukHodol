@@ -1,4 +1,4 @@
-package com.hunmuk.api.request;
+package com.hunmuk.api.request.post;
 
 import lombok.*;
 

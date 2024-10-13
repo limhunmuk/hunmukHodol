@@ -81,4 +81,20 @@ public class ExceptionController {
                 .body(body);
 
     }
+
+    @ResponseBody
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> exception(Exception e) {
+        log.error("exception > {}", e);
+
+        ErrorResponse body = ErrorResponse.builder()
+                .code("500")
+                .message(e.getMessage())
+                .build();
+
+
+        ResponseEntity<ErrorResponse> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(body);
+        return response;
+    }
 }

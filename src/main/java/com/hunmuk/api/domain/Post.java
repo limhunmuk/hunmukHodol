@@ -1,7 +1,12 @@
 package com.hunmuk.api.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -10,9 +15,10 @@ import lombok.*;
 public class Post {
 
     @Builder
-    public Post(String title, String contents) {
+    public Post(String title, String contents, User user) {
         this.title = title;
         this.contents = contents;
+        this.user = user;
     }
 
     @Id
@@ -20,6 +26,14 @@ public class Post {
     private Long id;
 
     private String title;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private User user;
+
+    // 연관관계 주인 mappedBy 적시
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Comment> comments;
 
     @Lob
     private String contents;
@@ -39,5 +53,15 @@ public class Post {
     public void edit(PostEditor editor) {
         this.title = editor.getTitle();
         this.contents = editor.getContents();
+    }
+
+    public Long getUserId() {
+        return user.getId();
+    }
+
+    public void addComment(Comment comment) {
+        comment.setPost(this);
+        this.comments.add(comment);
+
     }
 }

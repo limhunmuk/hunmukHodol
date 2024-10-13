@@ -1,7 +1,14 @@
-### 테스트요청
+### 게시글작성
 
-GET http://localhost:8080/foo
+POST http://localhost:8080/posts
 Content-Type: application/json
-authorization: eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzI2MDE4MzYxfQ.ks4L6aBWoiVbRGIp7rpXdBi-R29XHXFX90bdMh7V4Nw_owsp7K8bQ_81PchfGEXL
 
-### header에 authorization을 넣어서 요청하면 정상적으로 응답이 온다.
+{
+  "title": "제목입니다.",
+  "contents": "내용입니다."
+}
+
+### 게시글 삭제
+
+DELETE http://localhost:8080/posts/2
+Content-Type: application/json

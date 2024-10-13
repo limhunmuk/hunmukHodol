@@ -9,13 +9,13 @@ public class UserPrincipal extends User {
 
     private final Long userId;
 
-    public UserPrincipal(com.hunmuk.api.domain.User user, Long userId) {
+    public UserPrincipal(com.hunmuk.api.domain.User user) {
         super(user.getEmail(), user.getPassword(),
                 List.of(
                 new SimpleGrantedAuthority("ROLE_ADMIN")
-                , new SimpleGrantedAuthority("WRITE")
+                //, new SimpleGrantedAuthority("WRITE")
                 ));
-        this.userId = userId;
+        this.userId = user.getId();
     }
 
     public Long getUserId() {

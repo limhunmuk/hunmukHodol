@@ -2,10 +2,11 @@ package com.hunmuk.api.service;
 
 import com.hunmuk.api.domain.Post;
 import com.hunmuk.api.exception.PostNotFound;
-import com.hunmuk.api.repository.PostRepository;
-import com.hunmuk.api.request.PostCreate;
-import com.hunmuk.api.request.PostEdit;
-import com.hunmuk.api.request.PostSearch;
+import com.hunmuk.api.repository.post.PostRepository;
+import com.hunmuk.api.repository.UserRepository;
+import com.hunmuk.api.request.post.PostCreate;
+import com.hunmuk.api.request.post.PostEdit;
+import com.hunmuk.api.request.post.PostSearch;
 import com.hunmuk.api.response.PostResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static com.hunmuk.api.domain.User.builder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -28,6 +30,9 @@ class PostServiceTest {
     @Autowired
     PostRepository postRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     @BeforeEach
     void clean(){
         postRepository.deleteAll();
@@ -36,6 +41,15 @@ class PostServiceTest {
     @Test
     @DisplayName("글 작성")
     void 글작성(){
+
+        var user = builder()
+                .name("이름")
+                .email("ihm2119@naver.com")
+                .password("1234")
+                .build();
+
+        userRepository.save(user);
+
         //given
         PostCreate postRequest = PostCreate.builder()
                 .title("글제목")
@@ -43,7 +57,7 @@ class PostServiceTest {
                 .build();
 
         //when
-        postService.write(postRequest);
+        postService.write(user.getId(), postRequest);
 
         //then
         assertThat(postRepository.count()).isEqualTo(1);
@@ -56,12 +70,21 @@ class PostServiceTest {
     @DisplayName("글 1 조회 할꺼임")
     void 글조회(){
 
+        var user = builder()
+                .name("이름")
+                .email("ihm2119@naver.com")
+                .password("1234")
+                .build();
+
+        userRepository.save(user);
+
+
         PostCreate postRequest = PostCreate.builder()
                 .title("글제목")
                 .contents("글내용")
                 .build();
 
-        postService.write(postRequest);
+        postService.write(user.getId(), postRequest);
 
         //given
         Long id = 1L;

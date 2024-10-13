@@ -71,9 +71,19 @@ dependencies {
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
     // 암호화 모듈~
-    implementation 'org.springframework.security:spring-security-crypto:6.3.3'
+    implementation 'org.springframework.security:spring-security-crypto'
 
     implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
+
+    // remember-me 기능을 사용하기 위한 의존성 추가
+    // https://mvnrepository.com/artifact/org.springframework.security/spring-security-core
+    implementation 'org.springframework.security:spring-security-core:6.3.3'
+
+    testCompileOnly "org.projectlombok:lombok"
+    testAnnotationProcessor "org.projectlombok:lombok"
+
+
+
 }
 
 // gradle clean 시에 QClass 디렉토리 삭제

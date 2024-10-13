@@ -3,7 +3,7 @@ POST http://localhost:8080/auth/signup
 Content-Type: application/json
 
 {
-  "username": "hunmuk",
+  "name": "hunmuk",
     "password" : "1234",
     "email" : "ihm2119@naver.com"
 }
@@ -13,9 +13,12 @@ GET http://localhost:8080/auth/login
 
 ### 로그인
 POST http://localhost:8080/auth/loginProc
-Content-Type: application/x-www-form-urlencoded
+Content-Type: application/json
 
-username=ihm2119@naver.com&password=1234&remember-me=1
+{
+  "email": "ihm2119@naver.com",
+  "password": "1234"
+}
 
 ### 메인페이지
 GET http://localhost:8080/

@@ -1,14 +1,17 @@
 package com.hunmuk.api.controller;
 
+import com.hunmuk.api.config.UserPrincipal;
 import com.hunmuk.api.config.data.UserSession;
-import com.hunmuk.api.request.PostCreate;
-import com.hunmuk.api.request.PostEdit;
-import com.hunmuk.api.request.PostSearch;
+import com.hunmuk.api.request.post.PostCreate;
+import com.hunmuk.api.request.post.PostEdit;
+import com.hunmuk.api.request.post.PostSearch;
 import com.hunmuk.api.response.PostResponse;
 import com.hunmuk.api.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -83,15 +86,16 @@ public class PostController {
      * 등록
      * @param request
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/posts")
     //public void getPostsRequest(@RequestBody @Valid PostCreate request, @RequestHeader String authorization) {
-    public void getPostsRequest(@RequestBody @Valid PostCreate request) {
+    public void getPostsRequest(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody @Valid PostCreate request) {
 
         log.info("lhm test >>>>>>>>>>>>");
         //if(authorization.equals("hunmuk")) {
             request.validate();
             log.info("params > {}", request);
-            postService.write(request);
+            postService.write(userPrincipal.getUserId(), request);
         //}
     }
 
@@ -100,6 +104,8 @@ public class PostController {
      * @param postId
      * @param edit
      */
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasPermission(#postId, 'POST', 'WRITE')")
     @PatchMapping("/posts/{postId}")
     public void setPost(@PathVariable Long postId, @RequestBody @Valid PostEdit edit) {
         log.info("params > {}", postId);
@@ -110,10 +116,12 @@ public class PostController {
      * 삭제
      * @param postId
      */
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasPermission(#postId, 'POST', 'DELETE') && hasRole('ROLE_ADMIN')")
     @DeleteMapping("/posts/{postId}")
     //public void deletePost(@PathVariable Long postId ,  @RequestHeader String authorization) {
     public void deletePost(@PathVariable Long postId ) {
-        log.info("params > {}", postId);
+        log.info("delete params > {}", postId);
         postService.delete(postId);
     }
 }

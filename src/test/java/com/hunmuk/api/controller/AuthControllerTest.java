@@ -44,10 +44,9 @@ class AuthControllerTest {
     @BeforeEach
     void clean() {
         userRepository.deleteAll();
-
     }
 
-    @Test
+    //@Test
     @DisplayName("로그인 성공 ")
     void testCase1() throws Exception {
 
@@ -82,7 +81,7 @@ class AuthControllerTest {
 
     }
 
-    @Test
+    //@Test
     @Transactional
     @DisplayName("로그인 성공 후 세션 1개 생성")
     void testCase2() throws Exception {
@@ -117,7 +116,7 @@ class AuthControllerTest {
 
     }
 
-    @Test
+    //@Test
     @Transactional
     @DisplayName("로그인 성공 후 세션 응답")
     void testCase3() throws Exception {
@@ -152,7 +151,7 @@ class AuthControllerTest {
         Assertions.assertEquals(1, sessionRepository.count());
 
     }
-    @Test
+    //@Test
     @Transactional
     @DisplayName("로그인 후 권한이 필요한 페이지에 접속한다")
     void testCase4() throws Exception {

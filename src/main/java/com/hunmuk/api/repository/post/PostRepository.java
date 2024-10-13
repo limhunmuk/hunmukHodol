@@ -1,4 +1,4 @@
-package com.hunmuk.api.repository;
+package com.hunmuk.api.repository.post;
 
 import com.hunmuk.api.domain.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
